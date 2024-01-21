@@ -3,11 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SpacesModule } from './spaces/spaces.module';
 import { PartiesModule } from './parties/parties.module';
-import { RatingsModule } from './ratings/ratings.module';
 import { HostsModule } from './hosts/hosts.module';
+import { DrizzleModule } from './drizzle/drizzle.module';
+import { ConfigModule } from '@nestjs/config';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
-  imports: [SpacesModule, PartiesModule, RatingsModule, HostsModule],
+  imports: [SpacesModule, PartiesModule, HostsModule, DrizzleModule, ConfigModule.forRoot(), CommentsModule],
   controllers: [AppController],
   providers: [AppService],
 })
