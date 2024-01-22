@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSpaceDto } from './dto/space/create-space.dto';
-import { UpdateSpaceDto } from './dto/space/update-space.dto';
+import { CreateSpaceDto } from './dto/create-space.dto';
+import { UpdateSpaceDto } from './dto/update-space.dto';
 
 @Injectable()
 export class SpacesService {
