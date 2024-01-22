@@ -1,16 +1,12 @@
+import { IsInt, IsString } from "class-validator";
+
 export class CreateCommentDto {
-    // @IsDateString()
-    // readonly startTime: Date
+    @IsString()
+    readonly content: string
 
-    // @IsDateString()
-    // readonly endTime: Date
+    @IsInt()
+    readonly replyTo: number
 
-    // @IsBoolean()
-    // readonly inSession: boolean
-
-    // @IsBoolean()
-    // readonly isPrivate: boolean
-
-    // @IsString({each:true})
-    // readonly members: string[]
+    @IsString()
+    readonly author: string
 }
