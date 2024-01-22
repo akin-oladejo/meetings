@@ -6,11 +6,9 @@ import { PartiesModule } from './parties/parties.module';
 import { HostsModule } from './hosts/hosts.module';
 import { DrizzleModule } from './drizzle/drizzle.module';
 import { ConfigModule } from '@nestjs/config';
-import { CommentsModule } from './comments/comments.module';
-import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
-  imports: [SpacesModule, PartiesModule, HostsModule, DrizzleModule, ConfigModule.forRoot(), CommentsModule, RatingsModule],
+  imports: [SpacesModule, PartiesModule, HostsModule, DrizzleModule, ConfigModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 })
