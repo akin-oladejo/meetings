@@ -11,6 +11,7 @@ import type { RedisClientOptions } from 'redis'
 import * as redisStore from 'cache-manager-redis-store'
 import { config, validationSchema } from 'config';
 import { RedisModule} from './db/redis/redis.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RedisModule} from './db/redis/redis.module';
       validationSchema 
     }),
     RedisModule,
+    AuthModule,
     // CacheModule.register<RedisClientOptions>({
     //   isGlobal: true,
     //   store: redisStore,
