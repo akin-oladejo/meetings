@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
 import { SpacesService } from './spaces.service';
 import { CreateSpaceDto } from './dto/space/create-space.dto';
 import { UpdateSpaceDto } from './dto/space/update-space.dto';
+// import { CacheInterceptor } from '@nestjs/cache-manager';
 
+// @UseInterceptors(CacheInterceptor)
 @Controller('spaces')
 export class SpacesController {
   constructor(private readonly spacesService: SpacesService) {}
@@ -18,7 +20,7 @@ export class SpacesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.spacesService.findOne(+id);
   }
 
