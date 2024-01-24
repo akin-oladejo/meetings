@@ -11,7 +11,7 @@ export class SpacesService {
     ){ }
 
   create(createSpaceDto: CreateSpaceDto) {
-    return 'This action adds a new space';
+    return createSpaceDto;
   }
 
   findAll() {
@@ -19,11 +19,6 @@ export class SpacesService {
   }
 
   async findOne(id: number) {
-    // await this.cacheManager.set('ade', {key:20}, 10)
-    // await this.cacheManager.del('ade')
-    // await this.cacheManager.reset()
-    // const cachedItem = await this.cacheManager.get('ade')
-    // console.log(cachedItem)
     return `This action returns a #${id} space`;
   }
 
