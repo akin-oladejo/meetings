@@ -6,7 +6,7 @@ import { PartiesModule } from './parties/parties.module';
 import { HostsModule } from './hosts/hosts.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose'
-import { config, validationSchema } from 'config';
+import { config, validationSchema } from 'src/config';
 import { RedisModule} from './redis/redis.module'
 
 @Module({

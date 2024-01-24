@@ -32,9 +32,6 @@ export class CreateSpaceDto {
     @IsDateString()
     readonly endTime: Date
 
-    @IsBoolean()
-    readonly isPrivate: boolean
-
     @IsString({each:true})
     readonly members: string[]
 
