@@ -14,7 +14,7 @@ import { SpacesService } from './spaces.service';
 import { CreateSpaceDto } from './dto/space/create-space.dto';
 import { UpdateSpaceDto } from './dto/space/update-space.dto';
 import { boolean } from '@hapi/joi';
-import { CreateCommentDto } from './dto/comment/create-comment.dto';
+import { CreateCommentDto } from '../comments/dto/create-comment.dto';
 // import { CacheInterceptor } from '@nestjs/cache-manager';
 
 // @UseInterceptors(CacheInterceptor)
@@ -31,17 +31,17 @@ export class SpacesController {
     return this.spacesService.createSpace(start, isPrivate, createSpaceDto);
   }
 
-  @Post(':id/end')
+  @Patch(':id/end')
   async endSpace(@Param('id') id: string) {
     return this.spacesService.endSpace(id);
   }
 
-  @Post(':id/start')
+  @Patch(':id/start')
   async startSpace(@Param('id') id: string) {
     return this.spacesService.startSpace(id);
   }
 
-  @Post(':id/setPrivacy')
+  @Patch(':id/setPrivacy')
   async setPrivacy(
     @Param('id') id: string,
     @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
@@ -68,24 +68,5 @@ export class SpacesController {
   @Delete(':id')
   removeSpace(@Param('id') id: string) {
     return this.spacesService.removeSpace(id);
-  }
-
-  @Post(':id/comment')
-  createComment(
-    @Param('spaceId') spaceId: string,
-    @Param('replyTo') replyTo: string, // commentId of comment to reply
-    @Body() createCommentDto: CreateCommentDto,
-  ) {
-    return this.spacesService.createComment(spaceId, replyTo, createCommentDto)
-  }
-
-  @Get(':id/comments')
-  async getAllComments(@Param('spaceId') spaceId: string) {
-    return this.spacesService.findAllComments(spaceId);
-  }
-
-  @Delete(':id/comments')
-  async deleteComment(@Param('commentId') commentId:string){
-    return this.spacesService.deleteComment(commentId)
   }
 }
