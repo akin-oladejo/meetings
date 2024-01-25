@@ -61,6 +61,6 @@ export class CommentsService {
   }
 
   async deleteComment(commentId: string) {
-    // await this.commentModel.findOneAndDelete({_id:commentId}).exec()
+    await this.commentModel.findOneAndDelete({_id:commentId}).exec()
   }
 }
