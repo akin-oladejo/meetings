@@ -3,13 +3,13 @@ import { SpacesService } from './spaces.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Space, spaceSchema } from './entities/space.entity';
 import { SpacesController } from './spaces.controller';
-import { Comment, commentSchema } from './entities/comment.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Space.name, schema: spaceSchema }, { name: Comment.name, schema: commentSchema}]),
+    MongooseModule.forFeature([{ name: Space.name, schema: spaceSchema }]),
   ],
   controllers: [SpacesController],
   providers: [SpacesService],
+  // exports: [SpacesService]
 })
 export class SpacesModule {}

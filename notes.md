@@ -5,4 +5,7 @@ to-do
 - toggle privacy endpoint
 - comment code
 - test commenting on false space
-- accept none as a value
+- decorate with the appropriate http verbs
+- hide __v on create operations
+- comments
+- write parseobjectid pipe

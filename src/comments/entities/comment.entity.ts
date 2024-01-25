@@ -3,17 +3,20 @@ import { Document } from 'mongoose'
 
 @Schema()
 export class Comment extends Document {
-    @Prop()
+    @Prop({required:true})
     readonly spaceId: string
+
+    @Prop()
+    readonly author: string
 
     @Prop()
     readonly content: string
     
     @Prop()
     readonly replyTo: string
-    
-    @Prop()
-    readonly author: string
+
+    @Prop({default: new Date()})
+    readonly date: Date
 }
 
 export const commentSchema = SchemaFactory.createForClass(Comment)

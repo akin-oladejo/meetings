@@ -7,6 +7,7 @@ export function config(): IConfig {
             secret: process.env.ACCESS_SECRET,
             time: parseInt(process.env.ACCESS_TIME, 10),
           },
+        mongoUrl: process.env.MONGO_URL
     }
 }
 

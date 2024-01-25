@@ -1,17 +1,14 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSpaceDto } from './dto/space/create-space.dto';
 import { UpdateSpaceDto } from './dto/space/update-space.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Document } from 'mongoose';
+import { Model} from 'mongoose';
 import { Space } from './entities/space.entity';
-import { Comment } from './entities/comment.entity';
-import { CreateCommentDto } from './dto/comment/create-comment.dto';
 
 @Injectable()
 export class SpacesService {
   constructor(
-    @InjectModel(Space.name) private readonly spaceModel: Model<Space>,
-    @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
+    @InjectModel(Space.name) private readonly spaceModel: Model<Space>
   ) {}
 
   createSpace(start: boolean, isPrivate: boolean, createSpaceDto: CreateSpaceDto) {
@@ -29,9 +26,9 @@ export class SpacesService {
   }
 
   async findOneSpace(id: string) {
-    const space = await this.spaceModel.findOne({ _id: id }, { __v: 0 });
+    const space = await this.spaceModel.findOne({ _id: id }, { __v: 0 }).exec();
     if (!space) {
-      throw new NotFoundException(`Space with id {id} not found`);
+      throw new NotFoundException(`Space with id ${id} not found`);
     }
     return space;
   }
@@ -46,7 +43,7 @@ export class SpacesService {
       .exec();
 
     if (!existingSpace) {
-      throw new NotFoundException(`Space with id {id} not found`);
+      throw new NotFoundException(`Space with id ${id} not found`);
     }
     return existingSpace;
   }
@@ -61,7 +58,7 @@ export class SpacesService {
       .exec();
 
     if (!existingSpace) {
-      throw new NotFoundException(`Space with id {id} not found`);
+      throw new NotFoundException(`Space with id ${id} not found`);
     }
     return existingSpace;
   }
@@ -76,7 +73,7 @@ export class SpacesService {
       .exec();
 
     if (!existingSpace) {
-      throw new NotFoundException(`Space with id {id} not found`);
+      throw new NotFoundException(`Space with id ${id} not found`);
     }
     return existingSpace;
   }
@@ -94,25 +91,5 @@ export class SpacesService {
 
   async removeSpace(id: string) {
     const space = await this.spaceModel.findOneAndDelete({_id:id}).exec()
-  }
-
-  async findAllComments(id:string){
-    return this.commentModel.find({SpaceId:id}).exec()
-  }
-
-  createComment(id:string, replyTo:string, createCommentDto:CreateCommentDto){
-    const space:any = this.findOneSpace(id) // verify space exists
-
-    const comment = {
-      ...createCommentDto,
-      replyTo: replyTo? replyTo : '',
-      spaceId: space._id
-    };
-
-    return new this.commentModel(comment).save();
-  }
-
-  async deleteComment(commentId:string){
-    await this.commentModel.findOneAndDelete({_id:commentId}).exec()
   }
 }
