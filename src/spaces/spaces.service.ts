@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSpaceDto } from './dto/space/create-space.dto';
 import { UpdateSpaceDto } from './dto/space/update-space.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,11 +11,12 @@ export class SpacesService {
     @InjectModel(Space.name) private readonly spaceModel: Model<Space>
   ) {}
 
-  createSpace(start: boolean, isPrivate: boolean, createSpaceDto: CreateSpaceDto) {
+  createSpace(startNow: boolean, isPrivate: boolean, createSpaceDto: CreateSpaceDto) {
     const space = {
       ...createSpaceDto,
-      inSession: start ? true : false,
+      inSession: startNow ? true : false,
       isPrivate: isPrivate ? true : false,
+      startTime: startNow ? new Date() : null
     };
 
     return new this.spaceModel(space).save();
@@ -34,33 +35,35 @@ export class SpacesService {
   }
 
   async startSpace(id: string) {
-    const existingSpace = await this.spaceModel
-      .findOneAndUpdate(
-        { _id: id },
-        { $set: { inSession: true } },
-        { new: true },
-      )
-      .exec();
+    const existingSpace = await this.spaceModel.findOne({ _id: id }).exec()
 
+    // verify space exists
     if (!existingSpace) {
       throw new NotFoundException(`Space with id ${id} not found`);
     }
-    return existingSpace;
+
+    // verify space is not in session
+    if(existingSpace.inSession){
+      throw new ConflictException(`Space with id ${id} is already in session`)
+    }
+
+    return await this.spaceModel.findOneAndUpdate({ _id: id }, {$set:{inSession:true, startTime:new Date()}}, {new:true}).exec()
   }
 
   async endSpace(id: string) {
-    const existingSpace = await this.spaceModel
-      .findOneAndUpdate(
-        { _id: id },
-        { $set: { inSession: false } },
-        { new: true },
-      )
-      .exec();
+    const existingSpace = await this.spaceModel.findOne({ _id: id }).exec()
 
+    // verify space exists
     if (!existingSpace) {
       throw new NotFoundException(`Space with id ${id} not found`);
     }
-    return existingSpace;
+
+    // verify space is not in session
+    if(!existingSpace.inSession){
+      throw new ConflictException(`Space with id ${id} has already been ended`)
+    }
+
+    return await this.spaceModel.findOneAndUpdate({ _id: id }, {$set:{inSession:false, endTime:new Date()}}, {new:true}).exec()
   }
 
   async setSpacePrivacy(id: string, isPrivate: boolean) {

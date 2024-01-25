@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsDateString, IsObject, IsString, ValidateNested, IsNumber } from "class-validator"
+import { IsBoolean, IsDateString, IsObject, IsString, ValidateNested, IsNumber, IsOptional } from "class-validator"
 import { rating } from "src/spaces/interfaces/rating.interface";
 
 class Rating {
@@ -26,6 +26,7 @@ export class CreateSpaceDto {
     @IsString()
     readonly party: string
     
+    @IsOptional()
     @IsDateString()
     readonly startTime: Date
 

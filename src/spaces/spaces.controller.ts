@@ -24,20 +24,20 @@ export class SpacesController {
   @Post()
   create(
     @Body() createSpaceDto: CreateSpaceDto,
-    @Query('start', ParseBoolPipe) start: boolean,
+    @Query('startNow', ParseBoolPipe) startNow: boolean,
     @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
   ) {
-    return this.spacesService.createSpace(start, isPrivate, createSpaceDto);
+    return this.spacesService.createSpace(startNow, isPrivate, createSpaceDto);
   }
 
-  @Patch(':id/end')
-  async endSpace(@Param('id') id: string) {
-    return this.spacesService.endSpace(id);
+  @Patch('/start')
+  async startSpace(@Query('spaceId') spaceId: string) {
+    return this.spacesService.startSpace(spaceId);
   }
 
-  @Patch(':id/start')
-  async startSpace(@Param('id') id: string) {
-    return this.spacesService.startSpace(id);
+  @Patch('/end')
+  async endSpace(@Query('spaceId') spaceId: string) {
+    return this.spacesService.endSpace(spaceId);
   }
 
   @Patch(':id/setPrivacy')

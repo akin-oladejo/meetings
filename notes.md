@@ -4,8 +4,6 @@ to-do
 - remove inSession after setting up redis
 - toggle privacy endpoint
 - comment code
-- test commenting on false space
 - decorate with the appropriate http verbs
-- hide __v on create operations
 - comments
 - write parseobjectid pipe

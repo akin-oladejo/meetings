@@ -16,7 +16,7 @@ export class Space extends Document {
     @Prop({default: new Date()})
     readonly startTime: Date
     
-    @Prop()
+    @Prop({default: null})
     readonly endTime: Date
     
     @Prop()
