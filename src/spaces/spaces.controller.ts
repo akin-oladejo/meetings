@@ -10,13 +10,14 @@ import {
   ParseBoolPipe,
 } from '@nestjs/common';
 import { SpacesService } from './spaces.service';
-import { CreateSpaceDto } from './dto/space/create-space.dto';
-import { UpdateSpaceDto } from './dto/space/update-space.dto';
+import { CreateSpaceDto } from './dto/create-space.dto';
+import { UpdateSpaceDto } from './dto/update-space.dto';
 import { boolean } from '@hapi/joi';
 import { CreateCommentDto } from '../comments/dto/create-comment.dto';
+import { ApiTags } from '@nestjs/swagger';
 // import { CacheInterceptor } from '@nestjs/cache-manager';
 
-// @UseInterceptors(CacheInterceptor)
+@ApiTags('spaces')
 @Controller('spaces')
 export class SpacesController {
   constructor(private readonly spacesService: SpacesService) {}

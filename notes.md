@@ -4,6 +4,8 @@ to-do
 - remove inSession after setting up redis
 - toggle privacy endpoint
 - comment code
-- decorate with the appropriate http verbs
+- decorate with the appropriate http verbs and the appropriate @ApiResponse() for swagger
 - comments
 - write parseobjectid pipe
+- write logic for maxattended, rating and n_exited on space
+- update comments

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateSpaceDto } from './dto/space/create-space.dto';
-import { UpdateSpaceDto } from './dto/space/update-space.dto';
+import { CreateSpaceDto } from './dto/create-space.dto';
+import { UpdateSpaceDto } from './dto/update-space.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model} from 'mongoose';
 import { Space } from './entities/space.entity';
