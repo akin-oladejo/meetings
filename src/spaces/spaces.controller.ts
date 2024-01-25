@@ -40,13 +40,13 @@ export class SpacesController {
     return this.spacesService.endSpace(spaceId);
   }
 
-  @Patch(':id/setPrivacy')
+  @Patch('/setPrivacy')
   async setPrivacy(
-    @Param('id') id: string,
+    @Query('spaceId') spaceId: string,
     @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
   ) {
-    isPrivate = Boolean(isPrivate);
-    return this.spacesService.setSpacePrivacy(id, isPrivate);
+    // isPrivate = Boolean(isPrivate);
+    return this.spacesService.setSpacePrivacy(spaceId, isPrivate);
   }
 
   @Get()
