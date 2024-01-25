@@ -29,8 +29,8 @@ export class CreateSpaceDto {
     @IsDateString()
     readonly startTime: Date
 
-    @IsDateString()
-    readonly endTime: Date
+    // @IsDateString()
+    // readonly endTime: Date
 
     @IsString({each:true})
     readonly members: string[]

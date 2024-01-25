@@ -32,6 +32,15 @@ export class CommentsService {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
     }
 
+    // if this is a reply i.e replyTo is passed, verify target comment
+    if (replyTo) {
+      const targetComment = await this.commentModel.findOne({ _id:replyTo }).exec();
+      if (!targetComment) {
+        throw new NotFoundException(`Comment with id ${replyTo} not found`);
+      }
+    }
+
+    // create comment with values
     const comment = {
       ...createCommentDto,
       replyTo: replyTo,
@@ -61,6 +70,6 @@ export class CommentsService {
   }
 
   async deleteComment(commentId: string) {
-    await this.commentModel.findOneAndDelete({_id:commentId}).exec()
+    await this.commentModel.findOneAndDelete({ _id: commentId }).exec();
   }
 }

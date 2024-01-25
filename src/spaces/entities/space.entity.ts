@@ -13,7 +13,7 @@ export class Space extends Document {
     @Prop()
     readonly party: string
     
-    @Prop()
+    @Prop({default: new Date()})
     readonly startTime: Date
     
     @Prop()

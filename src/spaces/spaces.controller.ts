@@ -7,7 +7,6 @@ import {
   Param,
   Query,
   Delete,
-  UseInterceptors,
   ParseBoolPipe,
 } from '@nestjs/common';
 import { SpacesService } from './spaces.service';
