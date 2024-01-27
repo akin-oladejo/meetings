@@ -11,6 +11,14 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
+
+  async userExists(id: string) {
+    // this function is written as a shortcut to return a bool 
+    // for other services that will import the userService
+    return await this.userModel.exists({_id:id}).exec()?true:false
+  }
+
+
   async createUser(createUserDto: CreateUserDto) {
     // check that email is unique
     const exists = await this.userModel.exists({email:createUserDto.email})
@@ -27,17 +35,18 @@ export class UsersService {
     return this.userModel.find({}, { __v: 0, password: 0 }).exec();
   }
 
-  async findOneUser(id: number) {
+  async findOneUser(id: string) {
     const user = await this.userModel
       .findOne({ _id: id }, { password: 0, __v: 0 })
       .exec();
+
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
     return user;
   }
 
-  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
     const existingUser = await this.userModel
       .findOneAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true })
       .exec();
@@ -46,10 +55,10 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return existingUser;
+    return this.findOneUser(existingUser.id);
   }
 
-  async removeUser(id: number) {
+  async removeUser(id: string) {
     await this.userModel.findByIdAndDelete(id).exec();
   }
 }

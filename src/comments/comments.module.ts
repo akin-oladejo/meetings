@@ -8,7 +8,9 @@ import { Space, spaceSchema } from 'src/spaces/entities/space.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Comment.name, schema: commentSchema }, { name: Space.name, schema: spaceSchema }]),
+    MongooseModule.forFeature([
+      { name: Comment.name, schema: commentSchema }
+    ]),
     SpacesModule,
   ],
   controllers: [CommentsController],

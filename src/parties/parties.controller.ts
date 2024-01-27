@@ -9,26 +9,26 @@ export class PartiesController {
 
   @Post()
   create(@Body() createPartyDto: CreatePartyDto) {
-    return this.partiesService.create(createPartyDto);
+    return this.partiesService.createParty(createPartyDto);
   }
 
-  @Get()
-  findAll() {
-    return this.partiesService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.partiesService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.partiesService.findOne(+id);
+    return this.partiesService.findOneParty(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePartyDto: UpdatePartyDto) {
-    return this.partiesService.update(+id, updatePartyDto);
+    return this.partiesService.updateParty(+id, updatePartyDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.partiesService.remove(+id);
+    return this.partiesService.closeParty(+id);
   }
 }

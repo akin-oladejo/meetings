@@ -43,7 +43,7 @@ export class CreateSpaceDto {
     // @IsDateString()
     // readonly endTime: Date
 
-    @ApiProperty({description: "ID's of the members"})
+    @ApiProperty({description: "Id's of the members"})
     @IsString({each:true})
     readonly members: string[]
 

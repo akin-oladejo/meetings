@@ -1,6 +1,5 @@
 import { Schema, Prop, SchemaFactory, raw } from '@nestjs/mongoose' 
 import { Document } from 'mongoose'
-import { rating } from '../interfaces/rating.interface'
 
 @Schema()
 export class Space extends Document {
@@ -28,8 +27,8 @@ export class Space extends Document {
     @Prop()
     readonly members: string[]
     
-    @Prop({default: 0})
-    readonly nExited: number
+    // @Prop({default: 0})
+    // readonly nExited: number
     
     @Prop({default: 0})
     readonly maxAttended: number

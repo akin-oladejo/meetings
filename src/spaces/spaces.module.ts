@@ -10,6 +10,6 @@ import { SpacesController } from './spaces.controller';
   ],
   controllers: [SpacesController],
   providers: [SpacesService],
-  // exports: [SpacesService]
+  exports: [SpacesService]
 })
 export class SpacesModule {}

@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePartyDto } from './dto/create-party.dto';
 import { UpdatePartyDto } from './dto/update-party.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Party } from './entities/party.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class PartiesService {
-  create(createPartyDto: CreatePartyDto) {
+  constructor(
+    @InjectModel(Party.name) private readonly partyModel: Model<Party>
+    ){}
+  async createParty(createPartyDto: CreatePartyDto) {
+    // const party = await 
     return 'This action adds a new party';
   }
 
-  findAll() {
-    return `This action returns all parties`;
-  }
+  // findAll() {
+  //   return `This action returns all parties`;
+  // }
 
-  findOne(id: number) {
+  findOneParty(id: number) {
     return `This action returns a #${id} party`;
   }
 
-  update(id: number, updatePartyDto: UpdatePartyDto) {
+  updateParty(id: number, updatePartyDto: UpdatePartyDto) {
     return `This action updates a #${id} party`;
   }
 
-  remove(id: number) {
+  closeParty(id: number) {
     return `This action removes a #${id} party`;
   }
 }

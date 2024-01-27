@@ -11,15 +11,15 @@ import { Space } from 'src/spaces/entities/space.entity';
 export class CommentsService {
   constructor(
     @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
-    // private readonly spacesService:SpacesService,
-    @InjectModel(Space.name) private readonly spaceModel: Model<Space>,
+    private readonly spacesService:SpacesService,
+    // @InjectModel(Space.name) private readonly spaceModel: Model<Space>,
   ) {}
 
-  async spaceExists(spaceId) {
-    return (await this.spaceModel.findOne({ _id: spaceId }).exec())
-      ? true
-      : false;
-  }
+  // async spaceExists(spaceId) {
+  //   return (await this.spaceModel.findOne({ _id: spaceId }).exec())
+  //     ? true
+  //     : false;
+  // }
 
   async createComment(
     spaceId: string,
@@ -27,8 +27,11 @@ export class CommentsService {
     createCommentDto: CreateCommentDto,
   ) {
     // verify space
-    const space = await this.spaceModel.findOne({ _id: spaceId }).exec();
-    if (!space) {
+    // const space = await this.spaceModel.findOne({ _id: spaceId }).exec();
+    const spaceExists = await this.spacesService.spaceExists(spaceId)
+    // console.log(spaceExists)
+
+    if (!spaceExists) {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
     }
 
@@ -61,8 +64,10 @@ export class CommentsService {
 
   async findAllComments(spaceId: string) {
     // verify space
-    const space = await this.spaceModel.findOne({ _id: spaceId }).exec();
-    if (!space) {
+    // const space = await this.spaceModel.findOne({ _id: spaceId }).exec();
+    const spaceExists = this.spacesService.spaceExists(spaceId)
+
+    if (!spaceExists) {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
     }
 

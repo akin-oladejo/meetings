@@ -23,11 +23,18 @@ export class SpacesService {
   }
 
   findAllSpaces() {
-    return this.spaceModel.find().exec();
+    return this.spaceModel.find({}, {__v:0}).exec();
+  }
+
+  async spaceExists(id: string) {
+    // this function is written as a shortcut to return a bool 
+    // for other services that will import the spaceService
+    return await this.spaceModel.exists({_id:id}).exec()?true:false
   }
 
   async findOneSpace(id: string) {
     const space = await this.spaceModel.findOne({ _id: id }, { __v: 0 }).exec();
+
     if (!space) {
       throw new NotFoundException(`Space with id ${id} not found`);
     }
@@ -93,6 +100,6 @@ export class SpacesService {
   }
 
   async removeSpace(id: string) {
-    const space = await this.spaceModel.findOneAndDelete({_id:id}).exec()
+    await this.spaceModel.findOneAndDelete({_id:id}).exec()
   }
 }
