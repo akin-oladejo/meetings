@@ -24,7 +24,7 @@ import { AuthModule } from './auth/auth.module';
     // RedisModule,
     CommentsModule,
     UsersModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

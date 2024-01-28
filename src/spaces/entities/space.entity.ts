@@ -4,7 +4,7 @@ import { Document } from 'mongoose'
 @Schema()
 export class Space extends Document {
     @Prop()
-    readonly host: string
+    readonly hostId: string
 
     @Prop()
     readonly title: string

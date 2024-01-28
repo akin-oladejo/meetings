@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
-import { Model, MongooseError } from 'mongoose';
+import { Model } from 'mongoose';
 import { EmailAlreadyRegisteredException } from 'src/common/exceptions/EmailAlreadyRegistered.exception';
 
 @Injectable()
@@ -26,7 +26,8 @@ export class UsersService {
       throw new EmailAlreadyRegisteredException()
     }
 
-    const user = new this.userModel(createUserDto).save()
+    new this.userModel(createUserDto).save() // save new user
+    
     return this.userModel.findOne({email:createUserDto.email}, {password:0, __v:0})
   }
 

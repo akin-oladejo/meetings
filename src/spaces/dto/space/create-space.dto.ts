@@ -23,10 +23,6 @@ import { rating } from "src/spaces/interfaces/rating.interface";
 // }
 
 export class CreateSpaceDto {
-    @ApiProperty({description: 'Name of the host'})
-    @IsString()
-    readonly host: string
-
     @ApiProperty({description: 'Title of the space'})
     @IsString()
     readonly title: string

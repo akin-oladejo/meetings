@@ -10,11 +10,12 @@ import {
   ParseBoolPipe,
 } from '@nestjs/common';
 import { SpacesService } from './spaces.service';
-import { CreateSpaceDto } from './dto/create-space.dto';
-import { UpdateSpaceDto } from './dto/update-space.dto';
+import { CreateSpaceDto } from './dto/space/create-space.dto';
+import { UpdateSpaceDto } from './dto/space/update-space.dto';
 import { boolean } from '@hapi/joi';
 import { CreateCommentDto } from '../comments/dto/create-comment.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateMemberDto } from './dto/member/create-member.dto';
 // import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('spaces')
@@ -25,10 +26,11 @@ export class SpacesController {
   @Post()
   create(
     @Body() createSpaceDto: CreateSpaceDto,
+    @Query('hostId') hostId: string,
     @Query('startNow', ParseBoolPipe) startNow: boolean,
     @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
   ) {
-    return this.spacesService.createSpace(startNow, isPrivate, createSpaceDto);
+    return this.spacesService.createSpace(startNow, hostId, isPrivate, createSpaceDto);
   }
 
   @Patch('/start')
@@ -68,5 +70,38 @@ export class SpacesController {
   @Delete(':id')
   removeSpace(@Param('id') id: string) {
     return this.spacesService.removeSpace(id);
+  }
+
+  //------------------------------
+  @Post('/members')
+  joinSpace(@Query('spaceId') spaceId:string, @Body() createMemberDto: CreateMemberDto) {
+    return this.spacesService.createMember(spaceId, createMemberDto);
+  }
+
+  @Get('/members')
+  listAllMembers(
+    @Query('spaceId') spaceId: string
+  ) {
+    return this.spacesService.listAllMembers(spaceId);
+  }
+
+  @Get('/members/:memberId')
+  findOneMember(@Param('memberId') memberId: string) {
+    return this.spacesService.findOneMember(memberId);
+  }
+
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
+  //   return this.membersService.updateMember(id, updateMemberDto);
+  // }
+
+  @Patch('/members/:memberId')
+  updateMemberName(@Param('memberId') memberId: string, @Query('name') name: string) {
+    return this.spacesService.updateMemberName(memberId, name);
+  }
+
+  @Delete('/members/:memberId')
+  removeMember(@Param('memberId') memberId: string) {
+    return this.spacesService.removeMember(memberId);
   }
 }
