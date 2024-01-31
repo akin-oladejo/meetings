@@ -43,6 +43,7 @@ export class SpacesService {
       inSession: startNow ? true : false,
       isPrivate: isPrivate ? true : false,
       startTime: startNow ? new Date() : null,
+      members: [hostId]
     };
 
     return new this.spaceModel(space).save();
