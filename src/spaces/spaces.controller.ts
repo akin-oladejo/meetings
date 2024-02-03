@@ -12,7 +12,7 @@ import {
 import { SpacesService } from './spaces.service';
 import { CreateSpaceDto } from './dto/space/create-space.dto';
 import { UpdateSpaceDto } from './dto/space/update-space.dto';
-import { CreateCommentDto } from '../comments/dto/create-comment.dto';
+import { CreateCommentDto } from './dto/comment/create-comment.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/member/create-member.dto';
 
@@ -21,6 +21,7 @@ import { CreateMemberDto } from './dto/member/create-member.dto';
 export class SpacesController {
   constructor(private readonly spacesService: SpacesService) {}
 
+  // -----------------POST-----------------
   @ApiOperation({ summary: 'Create space' })
   @Post()
   create(
@@ -39,23 +40,42 @@ export class SpacesController {
     );
   }
 
-  @ApiOperation({ summary: 'Start space' })
-  @Patch('/start')
-  async startSpace(@Query('spaceId') spaceId: string) {
-    return this.spacesService.startSpace(spaceId);
+  @ApiOperation({ summary: 'Create a comment' })
+  @Post('/comments')
+  createComment(
+    @Query('spaceId') spaceId: string,
+    @Query('replyTo') replyTo: string = null, // commentId of comment to reply
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    return this.spacesService.createComment(spaceId, replyTo, createCommentDto);
   }
 
-  @ApiOperation({ summary: 'End space' })
-  @Patch('/end')
-  async endSpace(@Query('spaceId') spaceId: string) {
-    return this.spacesService.endSpace(spaceId);
+  @ApiOperation({ summary: 'Join a space (Create a member)' })
+  @Post('/members')
+  joinSpace(
+    @Query('spaceId') spaceId: string,
+    @Body() createMemberDto: CreateMemberDto,
+  ) {
+    return this.spacesService.createMember(spaceId, createMemberDto);
   }
 
+  // -----------------GET-----------------
   @ApiOperation({ summary: 'Return all spaces' })
   @Get()
   findAllSpaces() {
     return this.spacesService.findAllSpaces();
   }
+
+  @ApiOperation({ summary: 'Return all comments in a space' })
+  @Get('/comments')
+  async getAllComments(@Query('spaceId') spaceId: string) {
+    return this.spacesService.findAllComments(spaceId);
+  }
+
+  // @Get('/comments/:id')
+  // findOne(@Param('id') id: string) {
+  //   return this.spacesService.findOneComment(id);
+  // }
 
   @ApiOperation({ summary: 'List members in a space' })
   @Get('/members')
@@ -75,42 +95,18 @@ export class SpacesController {
     return this.spacesService.findOneSpace(id);
   }
 
-  @ApiOperation({ summary: 'Update space details' })
-  @Patch(':id')
-  updateSpace(@Param('id') id: string, @Body() updateSpaceDto: UpdateSpaceDto) {
-    return this.spacesService.updateSpace(id, updateSpaceDto);
+  // -----------------PATCH-----------------
+  @ApiOperation({ summary: 'Start space' })
+  @Patch('/start')
+  async startSpace(@Query('spaceId') spaceId: string) {
+    return this.spacesService.startSpace(spaceId);
   }
 
-  @ApiOperation({ summary: 'Delete space' })
-  @Delete(':id')
-  removeSpace(@Param('id') id: string) {
-    return this.spacesService.removeSpace(id);
+  @ApiOperation({ summary: 'End space' })
+  @Patch('/end')
+  async endSpace(@Query('spaceId') spaceId: string) {
+    return this.spacesService.endSpace(spaceId);
   }
-
-  //------------------------------
-  @ApiOperation({ summary: 'Join a space' })
-  @Post('/members')
-  joinSpace(
-    @Query('spaceId') spaceId: string,
-    @Body() createMemberDto: CreateMemberDto,
-  ) {
-    return this.spacesService.createMember(spaceId, createMemberDto);
-  }
-
-  @ApiOperation({ summary: 'Eject/Exit member from space' })
-  @Delete('/members/:memberId')
-  removeMember(@Param('memberId') memberId: string) {
-    return this.spacesService.removeMember(memberId);
-  }
-
-
-
-
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
-  //   return this.membersService.updateMember(id, updateMemberDto);
-  // }
 
   @ApiOperation({ summary: 'Update member details' })
   @Patch('/members/:memberId')
@@ -119,5 +115,35 @@ export class SpacesController {
     @Query('name') name: string,
   ) {
     return this.spacesService.updateMemberName(memberId, name);
+  }
+
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
+  //   return this.membersService.updateMember(id, updateMemberDto);
+  // }
+
+  @ApiOperation({ summary: 'Update space details' })
+  @Patch(':id')
+  updateSpace(@Param('id') id: string, @Body() updateSpaceDto: UpdateSpaceDto) {
+    return this.spacesService.updateSpace(id, updateSpaceDto);
+  }
+
+  // -----------------DELETE-----------------
+  @ApiOperation({ summary: 'Delete a comment' })
+  @Delete('/comments/:commentId')
+  async deleteComment(@Param('commentId') commentId: string) {
+    return this.spacesService.deleteComment(commentId);
+  }
+
+  @ApiOperation({ summary: 'Eject/Exit member from space' })
+  @Delete('/members/:memberId')
+  removeMember(@Param('memberId') memberId: string) {
+    return this.spacesService.removeMember(memberId);
+  }
+
+  @ApiOperation({ summary: 'Delete space' })
+  @Delete(':id')
+  removeSpace(@Param('id') id: string) {
+    return this.spacesService.removeSpace(id);
   }
 }

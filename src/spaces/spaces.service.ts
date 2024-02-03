@@ -11,12 +11,15 @@ import { Space } from './entities/space.entity';
 import { Member } from './entities/member.entity';
 import { CreateMemberDto } from './dto/member/create-member.dto';
 import { UsersService } from 'src/users/users.service';
+import { Comment } from './entities/comment.entity';
+import { CreateCommentDto } from './dto/comment/create-comment.dto';
 
 @Injectable()
 export class SpacesService {
   constructor(
     @InjectModel(Space.name) private readonly spaceModel: Model<Space>,
     @InjectModel(Member.name) private readonly memberModel: Model<Member>,
+    @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
     private readonly usersService: UsersService,
   ) {}
 
@@ -24,6 +27,7 @@ export class SpacesService {
     return (await this.spaceModel.exists({ _id: id }).exec()) ? true : false;
   }
 
+  // --------------CREATE---------------------
   async createSpace(
     startNow: boolean,
     hostId: string,
@@ -55,6 +59,37 @@ export class SpacesService {
 
     return new this.spaceModel(space).save();
   }
+
+  async createComment(
+    spaceId: string,
+    replyTo: string,
+    createCommentDto: CreateCommentDto,
+  ) {
+    // verify space
+    const spaceExists = await this.spaceExists(spaceId)
+
+    if (!spaceExists) {
+      throw new NotFoundException(`Space with id ${spaceId} not found`);
+    }
+
+    // if this is a reply i.e replyTo is passed, verify target comment
+    if (replyTo) {
+      const targetComment = await this.commentModel.findOne({ _id:replyTo }).exec();
+      if (!targetComment) {
+        throw new NotFoundException(`Comment with id ${replyTo} not found`);
+      }
+    }
+
+    // create comment with values
+    const comment = {
+      ...createCommentDto,
+      replyTo: replyTo,
+      spaceId: spaceId,
+    };
+
+    return new this.commentModel(comment).save();
+  }
+  
 
   findAllSpaces() {
     return this.spaceModel.find({}, { __v: 0 }).exec();
@@ -202,5 +237,32 @@ export class SpacesService {
     .exec();
 
     return 'Member removed'
+  }
+
+  // -----------------
+
+
+  async findOneComment(id: string) {
+    const comment = await this.commentModel
+      .findOne({ _id: id }, { __v: 0 })
+      .exec();
+    if (!comment) {
+      throw new NotFoundException(`Comment with id ${id} not found`);
+    }
+  }
+
+  async findAllComments(spaceId: string) {
+    // verify space
+    const spaceExists = this.spaceExists(spaceId)
+
+    if (!spaceExists) {
+      throw new NotFoundException(`Space with id ${spaceId} not found`);
+    }
+
+    return this.commentModel.find({ spaceId: spaceId }, { __v: 0 }).exec();
+  }
+
+  async deleteComment(commentId: string) {
+    await this.commentModel.findOneAndDelete({ _id: commentId }).exec();
   }
 }
