@@ -4,10 +4,13 @@ import { Document } from 'mongoose';
 @Schema()
 export class Party extends Document {
   @Prop()
-  readonly creator: string;
+  readonly creatorId: string;
 
   @Prop()
   readonly name: string;
+
+  @Prop()
+  readonly isPrivate: boolean
 
   @Prop()
   readonly members: string[];

@@ -25,14 +25,14 @@ export class SpacesController {
   // -----------------POST-----------------
   @ApiOperation({ summary: 'Create space' })
   @Post()
-  create(
+  async create(
     @Body() createSpaceDto: CreateSpaceDto,
     @Query('hostId') hostId: string,
     @Query('partyId') partyId: string = null,
     @Query('startNow', ParseBoolPipe) startNow: boolean,
     // @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
   ) {
-    return this.spacesService.createSpace(
+    return await this.spacesService.createSpace(
       startNow,
       hostId,
       partyId,
@@ -43,21 +43,21 @@ export class SpacesController {
 
   @ApiOperation({ summary: 'Create a comment' })
   @Post('/comments')
-  createComment(
+  async createComment(
     @Query('spaceId') spaceId: string,
     @Query('replyTo') replyTo: string = null, // commentId of comment to reply
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    return this.spacesService.createComment(spaceId, replyTo, createCommentDto);
+    return await this.spacesService.createComment(spaceId, replyTo, createCommentDto);
   }
 
   @ApiOperation({ summary: 'Join a space (Create a member)' })
   @Post('/members')
-  joinSpace(
+  async joinSpace(
     @Query('spaceId') spaceId: string,
     @Body() createMemberDto: CreateMemberDto,
   ) {
-    return this.spacesService.createMember(spaceId, createMemberDto);
+    return await this.spacesService.createMember(spaceId, createMemberDto);
   }
 
   // -----------------GET-----------------
@@ -70,7 +70,7 @@ export class SpacesController {
   @ApiOperation({ summary: 'Return all comments in a space' })
   @Get('/comments')
   async getAllComments(@Query('spaceId') spaceId: string) {
-    return this.spacesService.findAllComments(spaceId);
+    return await this.spacesService.findAllComments(spaceId);
   }
 
   // @Get('/comments/:id')
@@ -80,42 +80,42 @@ export class SpacesController {
 
   @ApiOperation({ summary: 'List members in a space' })
   @Get('/members')
-  listAllMembers(@Query('spaceId') spaceId: string) {
-    return this.spacesService.listAllMembers(spaceId);
+  async listAllMembers(@Query('spaceId') spaceId: string) {
+    return await this.spacesService.listAllMembers(spaceId);
   }
 
   @ApiOperation({ summary: 'Get particular member' })
   @Get('/members/:memberId')
-  findOneMember(@Param('memberId') memberId: string) {
-    return this.spacesService.findOneMember(memberId);
+  async findOneMember(@Param('memberId') memberId: string) {
+    return await this.spacesService.findOneMember(memberId);
   }
 
   @ApiOperation({ summary: 'Find space by Id' })
   @Get(':id')
   async findOneSpace(@Param('id') id: string) {
-    return this.spacesService.findOneSpace(id);
+    return await this.spacesService.findOneSpace(id);
   }
 
   // -----------------PATCH-----------------
   @ApiOperation({ summary: 'Start space' })
   @Patch('/start')
   async startSpace(@Query('spaceId') spaceId: string) {
-    return this.spacesService.startSpace(spaceId);
+    return await this.spacesService.startSpace(spaceId);
   }
 
   @ApiOperation({ summary: 'End space' })
   @Patch('/end')
   async endSpace(@Query('spaceId') spaceId: string) {
-    return this.spacesService.endSpace(spaceId);
+    return await this.spacesService.endSpace(spaceId);
   }
 
   @ApiOperation({ summary: 'Update member details' })
   @Patch('/members/:memberId')
-  updateMemberName(
+  async updateMemberName(
     @Param('memberId') memberId: string,
     @Body() updateMemberDto: UpdateMemberDto,
   ) {
-    return this.spacesService.updateMemberName(memberId, updateMemberDto);
+    return await this.spacesService.updateMemberName(memberId, updateMemberDto);
   }
 
   // @Patch(':id')
@@ -125,26 +125,26 @@ export class SpacesController {
 
   @ApiOperation({ summary: 'Update space details' })
   @Patch(':id')
-  updateSpace(@Param('id') id: string, @Body() updateSpaceDto: UpdateSpaceDto) {
-    return this.spacesService.updateSpace(id, updateSpaceDto);
+  async updateSpace(@Param('id') id: string, @Body() updateSpaceDto: UpdateSpaceDto) {
+    return await this.spacesService.updateSpace(id, updateSpaceDto);
   }
 
   // -----------------DELETE-----------------
   @ApiOperation({ summary: 'Delete a comment' })
   @Delete('/comments/:commentId')
   async deleteComment(@Param('commentId') commentId: string) {
-    return this.spacesService.deleteComment(commentId);
+    return await this.spacesService.deleteComment(commentId);
   }
 
   @ApiOperation({ summary: 'Eject/Exit member from space' })
   @Delete('/members/:memberId')
-  removeMember(@Param('memberId') memberId: string) {
-    return this.spacesService.removeMember(memberId);
+  async removeMember(@Param('memberId') memberId: string) {
+    return await this.spacesService.removeMember(memberId);
   }
 
   @ApiOperation({ summary: 'Delete space' })
   @Delete(':id')
-  removeSpace(@Param('id') id: string) {
-    return this.spacesService.removeSpace(id);
+  async removeSpace(@Param('id') id: string) {
+    return await this.spacesService.removeSpace(id);
   }
 }

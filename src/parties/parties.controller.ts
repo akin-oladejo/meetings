@@ -10,59 +10,66 @@ import { CreateInviteDto } from './dto/invite/create-invite.dto';
 export class PartiesController {
   constructor(private readonly partiesService: PartiesService) {}
 
+  @ApiOperation({description:"Create a party"})
   @Post()
-  create(
+  async create(
     @Query('creatorId') creatorId: string,
     @Body() createPartyDto: CreatePartyDto) {
-    return this.partiesService.createParty(creatorId, createPartyDto);
+    return await this.partiesService.createParty(creatorId, createPartyDto);
   }
 
-
+  @ApiOperation({description:"Find parties you are a member of"})
   @Get()
   findAll() {
-    return this.partiesService.findAll();
+    return this.partiesService.findAllParties();
   }
 
-  @ApiOperation({summary:"Chnage space privacy"})
-  @Patch('/setPrivacy')
-  async setPrivacy(
-    @Query('spaceId') spaceId: string,
-    @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
-  ) {
-    // isPrivate = Boolean(isPrivate);
-    return this.partiesService.setPartyPrivacy(spaceId, isPrivate);
-  }
+  // @ApiOperation({summary:"Chnage space privacy"})
+  // @Patch('/setPrivacy')
+  // async setPrivacy(
+  //   @Query('spaceId') spaceId: string,
+  //   @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
+  // ) {
+  //   // isPrivate = Boolean(isPrivate);
+  //   return this.partiesService.setPartyPrivacy(spaceId, isPrivate);
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.partiesService.findOneParty(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.partiesService.findOneParty(id);
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePartyDto: UpdatePartyDto) {
-    return this.partiesService.updateParty(id, updatePartyDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updatePartyDto: UpdatePartyDto) {
+  //   return this.partiesService.updateParty(id, updatePartyDto);
+  // }
 
-  @Patch()
-  joinParty(@Body() createInviteDto:CreateInviteDto){
-    return this.partiesService.createInvite()
-    //
-  }
+  // @Post('/invite')
+  // joinParty(@Body() createInviteDto:CreateInviteDto){
+  //   return this.partiesService.createInvite()
+  //   //
+  // }
 
-  @Post('/invite')
-  joinParty(@Body() createInviteDto:CreateInviteDto){
-    return this.partiesService.createInvite()
-    //
-  }
+  // @Patch('/invite/:id')
+  // leaveParty(@Param('id') id:string){
+  //   return this.partiesService.createInvite()
+  //   //
+  // }
 
-  @Patch('/invite/:id')
-  joinParty(@Param('id') id:string){
-    return this.partiesService.createInvite()
-    //
-  }
+  // @Patch('/invite/:id')
+  // leaveParty(@Param('id') id:string){
+  //   return this.partiesService.createInvite()
+  //   //
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.partiesService.closeParty(id);
-  }
+  // @Patch('/invite/:id')
+  // leaveParty(@Param('id') id:string){
+  //   return this.partiesService.createInvite()
+  //   //
+  // }
+
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.partiesService.closeParty(id);
+  // }
 }
