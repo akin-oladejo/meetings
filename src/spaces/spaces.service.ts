@@ -24,8 +24,15 @@ export class SpacesService {
   ) {}
 
   async spaceExists(id: string) {
-    return (await this.spaceModel.exists({ _id: id }).exec()) ? true : false;
+    return await this.spaceModel.exists({ _id: id }).exec() ? true : false;
   }
+
+  async memberExists(id: string) {
+    // this function is written as a shortcut to return a bool
+    // for other services that will import the memberService
+    return (await this.memberModel.exists({ _id: id }).exec()) ? true : false;
+  }
+
 
   // --------------CREATE---------------------
   async createSpace(
@@ -90,7 +97,24 @@ export class SpacesService {
     return new this.commentModel(comment).save();
   }
   
+  async createMember(spaceId: string, createMemberDto: CreateMemberDto) {
+    // verify space
+    const spaceExists = await this.spaceExists(spaceId);
 
+    if (!spaceExists) {
+      throw new NotFoundException(`Space with id ${spaceId} not found`);
+    }
+    
+    const member = {
+      spaceId: spaceId,
+      ...createMemberDto
+    }
+
+    return new this.memberModel(member).save(); // save new member and return
+  }
+  
+
+  // --------------READ-----------------------
   findAllSpaces() {
     return this.spaceModel.find({}, { __v: 0 }).exec();
   }
@@ -104,6 +128,48 @@ export class SpacesService {
     return space;
   }
 
+  async findOneComment(id: string) {
+    const comment = await this.commentModel
+      .findOne({ _id: id }, { __v: 0 })
+      .exec();
+    if (!comment) {
+      throw new NotFoundException(`Comment with id ${id} not found`);
+    }
+  }
+
+  async findAllComments(spaceId: string) {
+    // verify space
+    const spaceExists = await this.spaceExists(spaceId)
+    console.log(spaceExists)
+
+    if (!spaceExists) {
+      throw new NotFoundException(`Space with id ${spaceId} not found`);
+    }
+
+    return this.commentModel.find({ spaceId: spaceId }, { __v: 0 }).exec();
+  }
+
+  async listAllMembers(spaceId: string) {
+    const spaceExists = await this.spaceExists(spaceId);
+
+    if (!spaceExists) {
+      throw new NotFoundException(`Space with id ${spaceId} not found`);
+    }
+    // return all members
+    return this.memberModel.find({ spaceId:spaceId }, { __v: 0 }).exec();
+  }
+
+  async findOneMember(memberId: string) {
+    const member = await this.memberModel.findOne({ _id: memberId }).exec();
+
+    if (!member) {
+      throw new NotFoundException(`member with id ${memberId} not found`);
+    }
+
+    return member;
+  }
+
+  // -------------PATCH----------------------
   async startSpace(id: string) {
     const existingSpace = await this.spaceModel.findOne({ _id: id }).exec();
 
@@ -148,7 +214,6 @@ export class SpacesService {
       .exec();
   }
 
-
   async updateSpace(id: string, updateSpaceDto: UpdateSpaceDto) {
     const existingSpace = await this.spaceModel
       .findOneAndUpdate({ _id: id }, { $set: updateSpaceDto }, { new: true })
@@ -158,53 +223,6 @@ export class SpacesService {
       throw new NotFoundException(`Space with id {id} not found`);
     }
     return existingSpace;
-  }
-
-  async removeSpace(id: string) {
-    await this.spaceModel.findOneAndDelete({ _id: id }).exec();
-  }
-
-  // ---------------------- members ---------
-  async memberExists(id: string) {
-    // this function is written as a shortcut to return a bool
-    // for other services that will import the memberService
-    return (await this.memberModel.exists({ _id: id }).exec()) ? true : false;
-  }
-
-  async createMember(spaceId: string, createMemberDto: CreateMemberDto) {
-    // verify space
-    const spaceExists = await this.spaceExists(spaceId);
-
-    if (!spaceExists) {
-      throw new NotFoundException(`Space with id ${spaceId} not found`);
-    }
-    
-    const member = {
-      spaceId: spaceId,
-      ...createMemberDto
-    }
-
-    return new this.memberModel(member).save(); // save new member and return
-  }
-
-  async listAllMembers(spaceId: string) {
-    const spaceExists = await this.spaceExists(spaceId);
-
-    if (!spaceExists) {
-      throw new NotFoundException(`Space with id ${spaceId} not found`);
-    }
-    // return all members
-    return this.memberModel.find({ spaceId:spaceId }, { __v: 0 }).exec();
-  }
-
-  async findOneMember(memberId: string) {
-    const member = await this.memberModel.findOne({ _id: memberId }).exec();
-
-    if (!member) {
-      throw new NotFoundException(`member with id ${memberId} not found`);
-    }
-
-    return member;
   }
 
   // async updateMember(id: string, updateMemberDto: UpdateMemberDto) {
@@ -231,6 +249,8 @@ export class SpacesService {
     return this.findOneMember(existingMember.id);
   }
 
+
+  // ----------------DELETE
   async removeMember(id: string) {
     const existingMember = await this.memberModel
     .findOneAndUpdate({ _id: id }, { $set: { isActive: false } })
@@ -239,27 +259,8 @@ export class SpacesService {
     return 'Member removed'
   }
 
-  // -----------------
-
-
-  async findOneComment(id: string) {
-    const comment = await this.commentModel
-      .findOne({ _id: id }, { __v: 0 })
-      .exec();
-    if (!comment) {
-      throw new NotFoundException(`Comment with id ${id} not found`);
-    }
-  }
-
-  async findAllComments(spaceId: string) {
-    // verify space
-    const spaceExists = this.spaceExists(spaceId)
-
-    if (!spaceExists) {
-      throw new NotFoundException(`Space with id ${spaceId} not found`);
-    }
-
-    return this.commentModel.find({ spaceId: spaceId }, { __v: 0 }).exec();
+  async removeSpace(id: string) {
+    await this.spaceModel.findOneAndDelete({ _id: id }).exec();
   }
 
   async deleteComment(commentId: string) {
