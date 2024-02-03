@@ -197,6 +197,10 @@ export class SpacesService {
   }
 
   async removeMember(id: string) {
-    await this.memberModel.findByIdAndDelete(id).exec();
+    const existingMember = await this.memberModel
+    .findOneAndUpdate({ _id: id }, { $set: { isActive: false } })
+    .exec();
+
+    return 'Member removed'
   }
 }

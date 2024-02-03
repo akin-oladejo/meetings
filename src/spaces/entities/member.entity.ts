@@ -14,6 +14,9 @@ export class Member extends Document {
 
   @Prop({default:false})
   readonly hasVoted: boolean
+
+  @Prop({default:true})
+  readonly isActive: boolean
 }
 
 export const memberSchema = SchemaFactory.createForClass(Member);
