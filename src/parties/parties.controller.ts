@@ -10,7 +10,7 @@ import { CreateInviteDto } from './dto/invite/create-invite.dto';
 export class PartiesController {
   constructor(private readonly partiesService: PartiesService) {}
 
-  @ApiOperation({description:"Create a party"})
+  @ApiOperation({summary:"Create a party"})
   @Post()
   async create(
     @Query('creatorId') creatorId: string,
@@ -18,7 +18,7 @@ export class PartiesController {
     return await this.partiesService.createParty(creatorId, createPartyDto);
   }
 
-  @ApiOperation({description:"Find parties you are a member of"})
+  @ApiOperation({summary:"Find parties you are a member of"})
   @Get()
   findPartiesbyMemberId(
     @Query('memberId') memberId:string
@@ -34,11 +34,13 @@ export class PartiesController {
     return this.partiesService.findSpacesbyParty(partyId);
   }
 
+  @ApiOperation({summary:'Get one party'})
   @Get(':partyId')
   findOne(@Param('partyId') partyId: string) {
     return this.partiesService.findOneParty(partyId);
   }
 
+  @ApiOperation({summary:'Update party details'})
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePartyDto: UpdatePartyDto) {
     return this.partiesService.updateParty(id, updatePartyDto);
@@ -68,6 +70,7 @@ export class PartiesController {
   //   //
   // }
 
+  @ApiOperation({summary:'Delete a party'})
   @Delete(':partyId')
   async closeParty(@Param('partyId') partyId: string) {
     return await this.partiesService.closeParty(partyId);
