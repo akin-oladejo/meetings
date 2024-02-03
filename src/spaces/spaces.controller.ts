@@ -15,6 +15,7 @@ import { UpdateSpaceDto } from './dto/space/update-space.dto';
 import { CreateCommentDto } from './dto/comment/create-comment.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/member/create-member.dto';
+import { UpdateMemberDto } from './dto/member/update-member.dto';
 
 @ApiTags('spaces')
 @Controller('spaces')
@@ -29,13 +30,13 @@ export class SpacesController {
     @Query('hostId') hostId: string,
     @Query('partyId') partyId: string = null,
     @Query('startNow', ParseBoolPipe) startNow: boolean,
-    @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
+    // @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
   ) {
     return this.spacesService.createSpace(
       startNow,
       hostId,
       partyId,
-      isPrivate,
+      // isPrivate,
       createSpaceDto,
     );
   }
@@ -112,9 +113,9 @@ export class SpacesController {
   @Patch('/members/:memberId')
   updateMemberName(
     @Param('memberId') memberId: string,
-    @Query('name') name: string,
+    @Body() updateMemberDto: UpdateMemberDto,
   ) {
-    return this.spacesService.updateMemberName(memberId, name);
+    return this.spacesService.updateMemberName(memberId, updateMemberDto);
   }
 
   // @Patch(':id')

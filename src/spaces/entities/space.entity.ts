@@ -18,8 +18,6 @@ export class Space extends Document {
     @Prop({default: null})
     readonly endTime: Date
     
-    @Prop()
-    readonly isPrivate: boolean
 
     @Prop()
     readonly inSession: boolean
@@ -39,7 +37,7 @@ export class Space extends Document {
         veryHappy: {type: Number, default:0},
         happy: {type: Number, default:0}
     }))
-    readonly rating: Record<string, any>
+    readonly ratings: Record<string, any>
 }
 
 export const spaceSchema = SchemaFactory.createForClass(Space)

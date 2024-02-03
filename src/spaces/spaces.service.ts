@@ -13,6 +13,7 @@ import { CreateMemberDto } from './dto/member/create-member.dto';
 import { UsersService } from 'src/users/users.service';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/comment/create-comment.dto';
+import { UpdateMemberDto } from './dto/member/update-member.dto';
 
 @Injectable()
 export class SpacesService {
@@ -39,7 +40,7 @@ export class SpacesService {
     startNow: boolean,
     hostId: string,
     partyId: string,
-    isPrivate: boolean,
+    // isPrivate: boolean,
     createSpaceDto: CreateSpaceDto,
   ) {
     // verify host exists
@@ -59,7 +60,7 @@ export class SpacesService {
       hostId: hostId,
       partyId: partyId,
       inSession: startNow ? true : false,
-      isPrivate: isPrivate ? true : false,
+      // isPrivate: isPrivate ? true : false,
       startTime: startNow ? new Date() : null,
       
     };
@@ -237,16 +238,16 @@ export class SpacesService {
   //   return this.findOneMember(existingMember.id);
   // }
 
-  async updateMemberName(id: string, name: string) {
+  async updateMemberName(id: string, updateMemberDto:UpdateMemberDto) {
     const existingMember = await this.memberModel
-      .findOneAndUpdate({ _id: id }, { $set: { name: name } }, { new: true })
+      .findOneAndUpdate({ _id: id }, { $set: updateMemberDto }, { new: true })
       .exec();
 
     if (!existingMember) {
       throw new NotFoundException(`member with id ${id} not found`);
     }
 
-    return this.findOneMember(existingMember.id);
+    return existingMember;
   }
 
 
