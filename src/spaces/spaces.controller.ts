@@ -36,7 +36,6 @@ export class SpacesController {
       startNow,
       hostId,
       partyId,
-      // isPrivate,
       createSpaceDto,
     );
   }
@@ -61,12 +60,6 @@ export class SpacesController {
   }
 
   // -----------------GET-----------------
-  @ApiOperation({ summary: 'Return all spaces' })
-  @Get()
-  findAllSpaces() {
-    return this.spacesService.findAllSpaces();
-  }
-
   @ApiOperation({ summary: 'Return all comments in a space' })
   @Get('/comments')
   async getAllComments(@Query('spaceId') spaceId: string) {

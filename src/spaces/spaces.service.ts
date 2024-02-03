@@ -1,7 +1,10 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateSpaceDto } from './dto/space/create-space.dto';
 import { UpdateSpaceDto } from './dto/space/update-space.dto';
@@ -14,6 +17,7 @@ import { UsersService } from 'src/users/users.service';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/comment/create-comment.dto';
 import { UpdateMemberDto } from './dto/member/update-member.dto';
+import { PartiesService } from 'src/parties/parties.service';
 
 @Injectable()
 export class SpacesService {
@@ -22,10 +26,11 @@ export class SpacesService {
     @InjectModel(Member.name) private readonly memberModel: Model<Member>,
     @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
     private readonly usersService: UsersService,
+    @Inject(forwardRef(()=>PartiesService)) private readonly partiesService: PartiesService,
   ) {}
 
   async spaceExists(id: string) {
-    return await this.spaceModel.exists({ _id: id }).exec() ? true : false;
+    return (await this.spaceModel.exists({ _id: id }).exec()) ? true : false;
   }
 
   async memberExists(id: string) {
@@ -33,7 +38,6 @@ export class SpacesService {
     // for other services that will import the memberService
     return (await this.memberModel.exists({ _id: id }).exec()) ? true : false;
   }
-
 
   // --------------CREATE---------------------
   async createSpace(
@@ -47,14 +51,31 @@ export class SpacesService {
     const hostExists = await this.usersService.userExists(hostId);
 
     if (!hostExists) {
-      throw new NotFoundException(`Cannot find host. No user with id '${hostId}'. Also check if you passed in the hostId query.`);
+      throw new NotFoundException(
+        `Cannot find host. No user with id '${hostId}'. Also check if you passed in the hostId query.`,
+      );
     }
 
     // verify party exists
-    // if (partyId) {
-    //   //
-    // }
+    if (partyId) {
+      const party = await this.partiesService.findOneParty(partyId);
 
+      if (!party) {
+        throw new NotFoundException(
+          `Cannot find party. No party with id '${partyId}'.`,
+        );
+      }
+      
+      // return {host: hostId, partyMembers:party.members}
+      // return hostId in party.members
+      // return party.members
+      if (!(party.members.includes(hostId))) {
+        throw new UnauthorizedException(
+          `You are not authorized to start a space in this party`,
+        );
+      }
+     }
+      
     const space = {
       ...createSpaceDto,
       hostId: hostId,
@@ -62,11 +83,11 @@ export class SpacesService {
       inSession: startNow ? true : false,
       // isPrivate: isPrivate ? true : false,
       startTime: startNow ? new Date() : null,
-      
     };
 
     return new this.spaceModel(space).save();
   }
+
 
   async createComment(
     spaceId: string,
@@ -74,7 +95,7 @@ export class SpacesService {
     createCommentDto: CreateCommentDto,
   ) {
     // verify space
-    const spaceExists = await this.spaceExists(spaceId)
+    const spaceExists = await this.spaceExists(spaceId);
 
     if (!spaceExists) {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
@@ -82,7 +103,9 @@ export class SpacesService {
 
     // if this is a reply i.e replyTo is passed, verify target comment
     if (replyTo) {
-      const targetComment = await this.commentModel.findOne({ _id:replyTo }).exec();
+      const targetComment = await this.commentModel
+        .findOne({ _id: replyTo })
+        .exec();
       if (!targetComment) {
         throw new NotFoundException(`Comment with id ${replyTo} not found`);
       }
@@ -97,7 +120,7 @@ export class SpacesService {
 
     return new this.commentModel(comment).save();
   }
-  
+
   async createMember(spaceId: string, createMemberDto: CreateMemberDto) {
     // verify space
     const spaceExists = await this.spaceExists(spaceId);
@@ -105,21 +128,16 @@ export class SpacesService {
     if (!spaceExists) {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
     }
-    
+
     const member = {
       spaceId: spaceId,
-      ...createMemberDto
-    }
+      ...createMemberDto,
+    };
 
     return new this.memberModel(member).save(); // save new member and return
   }
-  
 
   // --------------READ-----------------------
-  findAllSpaces() {
-    return this.spaceModel.find({}, { __v: 0 }).exec();
-  }
-
   async findOneSpace(id: string) {
     const space = await this.spaceModel.findOne({ _id: id }, { __v: 0 }).exec();
 
@@ -140,8 +158,8 @@ export class SpacesService {
 
   async findAllComments(spaceId: string) {
     // verify space
-    const spaceExists = await this.spaceExists(spaceId)
-    console.log(spaceExists)
+    const spaceExists = await this.spaceExists(spaceId);
+    console.log(spaceExists);
 
     if (!spaceExists) {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
@@ -157,7 +175,7 @@ export class SpacesService {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
     }
     // return all members
-    return this.memberModel.find({ spaceId:spaceId }, { __v: 0 }).exec();
+    return this.memberModel.find({ spaceId: spaceId }, { __v: 0 }).exec();
   }
 
   async findOneMember(memberId: string) {
@@ -168,6 +186,10 @@ export class SpacesService {
     }
 
     return member;
+  }
+
+  findSpacesbyParty(partyId) {
+    return this.spaceModel.find({partyId}, { __v: 0 }).exec();
   }
 
   // -------------PATCH----------------------
@@ -238,7 +260,7 @@ export class SpacesService {
   //   return this.findOneMember(existingMember.id);
   // }
 
-  async updateMemberName(id: string, updateMemberDto:UpdateMemberDto) {
+  async updateMemberName(id: string, updateMemberDto: UpdateMemberDto) {
     const existingMember = await this.memberModel
       .findOneAndUpdate({ _id: id }, { $set: updateMemberDto }, { new: true })
       .exec();
@@ -250,14 +272,13 @@ export class SpacesService {
     return existingMember;
   }
 
-
   // ----------------DELETE
   async removeMember(id: string) {
     const existingMember = await this.memberModel
-    .findOneAndUpdate({ _id: id }, { $set: { isActive: false } })
-    .exec();
+      .findOneAndUpdate({ _id: id }, { $set: { isActive: false } })
+      .exec();
 
-    return 'Member removed'
+    return 'Member removed';
   }
 
   async removeSpace(id: string) {

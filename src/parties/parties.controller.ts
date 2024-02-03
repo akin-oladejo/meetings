@@ -26,6 +26,14 @@ export class PartiesController {
     return this.partiesService.findPartiesbyMemberId(memberId);
   }
 
+  @ApiOperation({ summary: 'Get all spaces in a party' })
+  @Get('/spaces')
+  findSpacesbyParty(
+    @Query('partyId') partyId: string
+  ) {
+    return this.partiesService.findSpacesbyParty(partyId);
+  }
+
   @Get(':partyId')
   findOne(@Param('partyId') partyId: string) {
     return this.partiesService.findOneParty(partyId);
@@ -60,8 +68,8 @@ export class PartiesController {
   //   //
   // }
 
-  @Delete(':id')
-  closeParty(@Param('partyId') partyId: string) {
-    return this.partiesService.closeParty(partyId);
+  @Delete(':partyId')
+  async closeParty(@Param('partyId') partyId: string) {
+    return await this.partiesService.closeParty(partyId);
   }
 }
