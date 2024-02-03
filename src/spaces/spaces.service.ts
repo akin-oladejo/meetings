@@ -143,21 +143,32 @@ export class SpacesService {
     if (!spaceExists) {
       throw new NotFoundException(`Space with id ${spaceId} not found`);
     }
+    
+    const member = {
+      spaceId: spaceId,
+      ...createMemberDto
+    }
 
-    return new this.memberModel(createMemberDto).save(); // save new member and return
+    return new this.memberModel(member).save(); // save new member and return
   }
 
-  async listAllMembers(spaceId) {
+  async listAllMembers(spaceId: string) {
+    const spaceExists = await this.spaceExists(spaceId);
+
+    if (!spaceExists) {
+      throw new NotFoundException(`Space with id ${spaceId} not found`);
+    }
     // return all members
-    return this.memberModel.find({ spaceId }, { __v: 0 }).exec();
+    return this.memberModel.find({ spaceId:spaceId }, { __v: 0 }).exec();
   }
 
-  async findOneMember(id: string) {
-    const member = await this.memberModel.findOne({ _id: id }).exec();
+  async findOneMember(memberId: string) {
+    const member = await this.memberModel.findOne({ _id: memberId }).exec();
 
     if (!member) {
-      throw new NotFoundException(`member with id ${id} not found`);
+      throw new NotFoundException(`member with id ${memberId} not found`);
     }
+
     return member;
   }
 

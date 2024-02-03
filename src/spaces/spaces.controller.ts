@@ -15,7 +15,6 @@ import { UpdateSpaceDto } from './dto/space/update-space.dto';
 import { CreateCommentDto } from '../comments/dto/create-comment.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/member/create-member.dto';
-// import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('spaces')
 @Controller('spaces')
@@ -58,6 +57,18 @@ export class SpacesController {
     return this.spacesService.findAllSpaces();
   }
 
+  @ApiOperation({ summary: 'List members in a space' })
+  @Get('/members')
+  listAllMembers(@Query('spaceId') spaceId: string) {
+    return this.spacesService.listAllMembers(spaceId);
+  }
+
+  @ApiOperation({ summary: 'Get particular member' })
+  @Get('/members/:memberId')
+  findOneMember(@Param('memberId') memberId: string) {
+    return this.spacesService.findOneMember(memberId);
+  }
+
   @ApiOperation({ summary: 'Find space by Id' })
   @Get(':id')
   async findOneSpace(@Param('id') id: string) {
@@ -92,17 +103,9 @@ export class SpacesController {
     return this.spacesService.removeMember(memberId);
   }
 
-  @ApiOperation({ summary: 'List members in a space' })
-  @Get('/members')
-  listAllMembers(@Query('spaceId') spaceId: string) {
-    return this.spacesService.listAllMembers(spaceId);
-  }
 
-  @ApiOperation({ summary: 'Get particular member' })
-  @Get('/members/:memberId')
-  findOneMember(@Param('memberId') memberId: string) {
-    return this.spacesService.findOneMember(memberId);
-  }
+
+
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
