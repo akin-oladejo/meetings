@@ -27,6 +27,7 @@ export class SpacesService {
   async createSpace(
     startNow: boolean,
     hostId: string,
+    partyId: string,
     isPrivate: boolean,
     createSpaceDto: CreateSpaceDto,
   ) {
@@ -37,13 +38,19 @@ export class SpacesService {
       throw new NotFoundException(`Cannot find host. No user with id '${hostId}'. Also check if you passed in the hostId query.`);
     }
 
+    // verify party exists
+    // if (partyId) {
+    //   //
+    // }
+
     const space = {
       ...createSpaceDto,
       hostId: hostId,
+      partyId: partyId,
       inSession: startNow ? true : false,
       isPrivate: isPrivate ? true : false,
       startTime: startNow ? new Date() : null,
-      members: [hostId]
+      
     };
 
     return new this.spaceModel(space).save();
@@ -106,20 +113,6 @@ export class SpacesService {
       .exec();
   }
 
-  async setSpacePrivacy(id: string, isPrivate: boolean) {
-    const existingSpace = await this.spaceModel
-      .findOneAndUpdate(
-        { _id: id },
-        { $set: { isPrivate: isPrivate } },
-        { new: true },
-      )
-      .exec();
-
-    if (!existingSpace) {
-      throw new NotFoundException(`Space with id ${id} not found`);
-    }
-    return existingSpace;
-  }
 
   async updateSpace(id: string, updateSpaceDto: UpdateSpaceDto) {
     const existingSpace = await this.spaceModel

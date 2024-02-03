@@ -9,11 +9,11 @@ export class Member extends Document {
   @Prop()
   readonly name: string;
 
+  // @Prop({default: false})
+  // readonly isHost: boolean
+
   @Prop({default:false})
   readonly hasVoted: boolean
-
-  @Prop({default: false})
-  readonly isHost: boolean
 }
 
 export const memberSchema = SchemaFactory.createForClass(Member);

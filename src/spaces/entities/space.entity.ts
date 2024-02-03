@@ -10,7 +10,7 @@ export class Space extends Document {
     readonly title: string
     
     @Prop()
-    readonly party: string
+    readonly partyId: string
     
     @Prop({default: new Date()})
     readonly startTime: Date
@@ -24,8 +24,8 @@ export class Space extends Document {
     @Prop()
     readonly inSession: boolean
     
-    @Prop()
-    readonly members: string[]
+    // @Prop()
+    // readonly members: string[]
     
     // @Prop({default: 0})
     // readonly nExited: number

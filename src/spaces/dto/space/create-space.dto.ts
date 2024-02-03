@@ -27,9 +27,9 @@ export class CreateSpaceDto {
     @IsString()
     readonly title: string
 
-    @ApiProperty({description: 'Party ID'})
-    @IsString()
-    readonly party: string
+    // @ApiProperty({description: 'Party Id'})
+    // @IsString()
+    // readonly partyId: string
     
     @ApiProperty({description: 'Time the space starts'})
     @IsOptional()
@@ -39,9 +39,9 @@ export class CreateSpaceDto {
     // @IsDateString()
     // readonly endTime: Date
 
-    @ApiProperty({description: "Id's of the members"})
-    @IsString({each:true})
-    readonly members: string[]
+    // @ApiProperty({description: "Id's of the members"})
+    // @IsString({each:true})
+    // readonly members: string[]
 
     // @ApiProperty({description: ""})
     // @IsNumber()
