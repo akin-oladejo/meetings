@@ -20,29 +20,21 @@ export class PartiesController {
 
   @ApiOperation({description:"Find parties you are a member of"})
   @Get()
-  findAll() {
-    return this.partiesService.findAllParties();
+  findPartiesbyMemberId(
+    @Query('memberId') memberId:string
+  ) {
+    return this.partiesService.findPartiesbyMemberId(memberId);
   }
 
-  // @ApiOperation({summary:"Chnage space privacy"})
-  // @Patch('/setPrivacy')
-  // async setPrivacy(
-  //   @Query('spaceId') spaceId: string,
-  //   @Query('isPrivate', ParseBoolPipe) isPrivate: boolean,
-  // ) {
-  //   // isPrivate = Boolean(isPrivate);
-  //   return this.partiesService.setPartyPrivacy(spaceId, isPrivate);
-  // }
+  @Get(':partyId')
+  findOne(@Param('partyId') partyId: string) {
+    return this.partiesService.findOneParty(partyId);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.partiesService.findOneParty(id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updatePartyDto: UpdatePartyDto) {
-  //   return this.partiesService.updateParty(id, updatePartyDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updatePartyDto: UpdatePartyDto) {
+    return this.partiesService.updateParty(id, updatePartyDto);
+  }
 
   // @Post('/invite')
   // joinParty(@Body() createInviteDto:CreateInviteDto){
@@ -68,8 +60,8 @@ export class PartiesController {
   //   //
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.partiesService.closeParty(id);
-  // }
+  @Delete(':id')
+  closeParty(@Param('partyId') partyId: string) {
+    return this.partiesService.closeParty(partyId);
+  }
 }
