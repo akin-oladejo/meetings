@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { EmailAlreadyRegisteredException } from 'src/common/exceptions/EmailAlreadyRegistered.exception';
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersService {
@@ -26,9 +27,17 @@ export class UsersService {
       throw new EmailAlreadyRegisteredException()
     }
 
-    new this.userModel(createUserDto).save() // save new user
+    const saltOrRounds = 10
+
+    // hash password
+    const newUser = {
+      ...createUserDto,
+      password: await bcrypt.hash(createUserDto.password, saltOrRounds)
+    }
+
+    new this.userModel(newUser).save() // save new user
     
-    return this.userModel.findOne({email:createUserDto.email}, {password:0, __v:0})
+    return this.userModel.findOne({email:newUser.email}, {password:0, __v:0})
   }
 
   async findAllUsers() {

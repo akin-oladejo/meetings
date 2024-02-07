@@ -32,10 +32,9 @@ export class Space extends Document {
     readonly maxAttended: number
     
     @Prop(raw({
-        verySad: {type: Number, default:0},
-        sad: {type: Number, default:0},
-        veryHappy: {type: Number, default:0},
-        happy: {type: Number, default:0}
+        pleased: {type: Number, default:0},
+        displeased: {type: Number, default:0},
+        neutral: {type: Number, default:0}
     }))
     readonly ratings: Record<string, any>
 }
