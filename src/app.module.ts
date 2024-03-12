@@ -16,7 +16,10 @@ import * as joi from '@hapi/joi';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: joi.object({
-        NODE_ENV: joi.string().valid('development', 'production').default('development'),
+        NODE_ENV: joi
+          .string()
+          .valid('development', 'production')
+          .default('development'),
         MONGO_URL: joi.string().required(),
         JWT_KEY: joi.string().required(),
       }),
