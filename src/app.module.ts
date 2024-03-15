@@ -24,7 +24,7 @@ import * as joi from '@hapi/joi';
         JWT_KEY: joi.string().required(),
       }),
     }),
-    MongooseModule.forRoot(process.env.MONGO_URL),
+    MongooseModule.forRoot(process.env.MONGO_URL, {dbName: process.env.DB_NAME}),
     SpacesModule,
     // RedisModule,
     UsersModule,
